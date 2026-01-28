@@ -1,9 +1,11 @@
 <?php
 $ss = ss();
 $userBook = DB::fetchAll("
-select b.title, b.author, r.book_idx, r.status from rent r
+select l.name, b.title, b.author, r.book_idx, r.status, r.rent_at, r.return_date from rent r
 join book b
 on b.idx = r.book_idx
+join library l
+on b.library_idx = l.idx
 where r.user_id = '$ss' 
 ");
 foreach($userBook as $u):
@@ -11,8 +13,10 @@ foreach($userBook as $u):
 
 <form action="/return" method="post">
   <input type="hidden" name="idx" value="<?=$u -> book_idx?>">
+  <p>서점: <?=$u -> name?></p>
   <p>제목: <?=$u->title?></p>
   <p>작가: <?=$u->author?></p>
+  <p>대출기간: <?=$u -> rent_at?> ~ <?=$u -> return_date?></p>
   <button <?=$u -> status == 'O' ? '' : 'disabled'?>><?=$u -> status == 'O' ? '반납' : '반납됨 ㅋ'?></button>
 </form>
 

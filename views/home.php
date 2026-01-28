@@ -7,7 +7,6 @@ $manager = DB::fetch("select * from user where role = '서점 관리자' and id 
 if($normal):
 ?>
 <a href="/check">서점 조회</a>
-<a href="/rental">서점 책 대여</a>
 <a href="/my">마이 프로필</a>
 <?php elseif($manager):?>
 <a href="/regiBook">책 등록</a>
