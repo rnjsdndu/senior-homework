@@ -1,5 +1,5 @@
 <?php
-$lib = DB::fetchAll("select l.name, l.idx from library l join book b on b.library_idx = l.idx");
+$lib = DB::fetchAll("select name, idx from library");
 foreach($lib as $l):
 ?>
 <form action="/rental" method="post">

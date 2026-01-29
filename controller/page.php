@@ -97,6 +97,14 @@ post('/regiBack',function() {
   move('/', '등록 ㅗ');
 });
 
-get('/rentalUserCheck', function() {
-  view('rentalUserCheck');
+get('/rentalUserCheckCalendar', function() {
+  view('rentalUserCheckCalendar');
+});
+
+get('/rentalUserCheckGraph', function() {
+  view('rentalUserCheckGraph');
+});
+
+post('/userProfile', function() {
+  view('userProfile');
 });
