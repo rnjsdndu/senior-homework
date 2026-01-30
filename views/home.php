@@ -3,6 +3,7 @@ $ss = ss();
 $user = DB::fetch("select * from user where id = '$ss'") ?? 0;
 $normal = DB::fetch("select * from user where role = '일반' and id = '$ss'");
 $manager = DB::fetch("select * from user where role = '서점 관리자' and id = '$ss'");
+$admin = DB::fetch("select * from user where role = '관리자' and id = '$ss'");
 
 if($normal):
 ?>
@@ -12,4 +13,7 @@ if($normal):
 <a href="/regiBook">책 등록</a>
 <a href="/rentalUserCheckCalendar">책 대여유저 조회(캘린더)</a>
 <a href="/rentalUserCheckGraph">책 대여 유저 조회(표)</a>
+<?php elseif($admin):?>
+<a href="/libManage">서점 관리</a>
+<a href="/userList">유저 리스트 조회</a>
 <?php endif;?>
