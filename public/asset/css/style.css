@@ -1,9 +1,11 @@
 table{
-  width: 900px;
-  height: 900px;
+  width: 800px;
+  height: 800px;
   border-spacing: 0;
 }
 
 td{padding: 10px; border: 1px solid rgb(212, 212, 212);}
 
 .today{border-color: red;}
+
+.flex{display: flex;}

@@ -3,6 +3,15 @@ $year=(int)($_GET['y']??date('Y'));
 $month=(int)($_GET['m']??date('n'));
 
 $firstDay=(new DateTimeImmutable)->setDate($year,$month,1);
+$prev=$firstDay->modify('-1 month');
+$next=$firstDay->modify('+1 month');
+
+function q($y,$m){
+  $g=$_GET;
+  $g['y']=$y; $g['m']=$m;
+  return '?'.http_build_query($g);
+}
+
 $padding=(int)$firstDay->format('w');
 $days=(int)$firstDay->format('t');
 $cell=(int)(ceil(($padding+$days)/7)*7);
@@ -23,8 +32,14 @@ $rents=DB::fetchAll("
 ");
 
 $map=[];
-foreach($rents as $r) $map[$r->d][] = [$r->user_id,$r->title];
+foreach($rents as $r) $map[$r->d][]=[$r->user_id,$r->title];
 ?>
+
+<div class=flex>
+  <a class=nav href="<?=q((int)$prev->format('Y'),(int)$prev->format('n'))?>">◀</a>
+  <h1><?=$firstDay->format('Y년 n월')?></h1>
+  <a class=nav href="<?=q((int)$next->format('Y'),(int)$next->format('n'))?>">▶</a>
+</div>
 
 <table>
   <tr><?php foreach($week as $w) echo "<th>$w</th>";?></tr>

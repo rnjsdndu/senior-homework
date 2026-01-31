@@ -9,6 +9,7 @@ $user = DB::fetchAll("select * from user where not role = '관리자'");
 <div>
   <p><?=$u -> id?></p>
   <p><?=$u -> role?></p>
+  <p>-----------------------------------------</p>
 </div>
 <?php endforeach;?>
 

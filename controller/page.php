@@ -49,18 +49,22 @@ post('/userProfile', function() {
 
 get('/logout', function() {
   session_destroy();
-  move('/', '로그아웃 ㅋ');
+  move('/', '로그아웃');
 });
 
 post('/joinBack', function() {
   extract($_POST);
-  if(!$id || !$password) return move('/', '빈칸');
+  if(!$id || !$password) return move('/join', '빈칸');
 
   $num = preg_match("/\d/", $id);
   $en = preg_match('/[a-zA-Z]/', $id);
   $spe = preg_match('/[!@#$%^&*()|?\/]/', $password);
 
-  if(!$num || !$spe || !$en) return move('/', '다시');
+  $hasId = DB::fetch("select id from user where id = '$id'");
+
+  if($hasId) return move('/join' ,'이미 있음');
+
+  if(!$num || !$spe || !$en) return move('/join', '다시');
 
   DB::exec("insert into user (id, password, role) values ('$id', '$password', '일반')");
   move('/join', '성공');
@@ -117,10 +121,12 @@ post('/libManageBack', function() {
   extract($_POST);
   $tmp = $_FILES['logo']['tmp_name'];
   $image = $_FILES['logo']['name'];
-  move_uploaded_file($tmp, "./logo/$image");
   $user = DB::fetch("select * from user where id = '$user_id'");
-  if(!$user) return move('/libManage', '그런 유저 없느데');
+  $library = DB::fetch("select * from library where name = '$name'");
   if(!$user_id || !$name || !$image) return move('/libManage', '빈칸');
+  if(!$user) return move('/libManage', '그런 유저 없느데');
+  if($library) return move('/libManage', '이미 있는 도서관');
+  move_uploaded_file($tmp, "./logo/$image");
   DB::exec("insert into library(name, owner_idx, image) values ('$name', '$user->idx', '$image')");
   DB::exec("update user set role = '서점 관리자' where id = '$user->id'");
   move('/libManage', '등록');
@@ -129,21 +135,24 @@ post('/libManageBack', function() {
 post('/deleteLib', function() {
   extract($_POST);
   DB::exec("delete from library where idx = '$library_idx'");
+  move('/libManage', '삭제');
 });
-
+  
 post('/libEditBack', function() {
   extract($_POST);
   $f = $_FILES['logo'] ?? 0;
   $image = $oldImage;
+  $library = DB::fetch("select * from library where name = '$name'");
   $user = DB::fetch("select * from user where id = '$user_id'");
   if(!$user) return move('/libManage', '그런 유저 없느데');
-
+  if($library) return move('/libManage', '이미 있는 도서관');
+  
   if($f && $f['name']){
     $image=$f['name'];
     move_uploaded_file($f['tmp_name'], "./logo/$image");
   }
 
-  if(!$image) return move('/libManage', '빈칸');
+  if(!$image || !$user_id || !$name) return move('/libManage', '빈칸');
 
   DB::exec("update library set name = '$name', owner_idx = '$user_idx', image = '$image' where idx = '$library_idx'");
   move('/libManage','수정 완료');
@@ -156,9 +165,35 @@ post('/managerRegi', function() {
 
   move_uploaded_file($tmp, "./logo/$image");
 
+  if(!$libName || !$image || !$id || !$password) return move('/userList', '빈칸');
+
   DB::exec("insert into user (id, password, role) values ('$id', '$password', '서점 관리자')");
   $user_id = DB::fetch("select idx from user where id = '$id'") -> idx;
   DB::exec("insert into library (name, owner_idx, image) values('$libName', '$user_id', '$image')");
 
   move('/userList', '등록 완료');
+});
+
+get('/bookEdit', function() {
+  view('/regiBook');
+});
+
+post('/editBack', function() {
+  extract($_POST);
+  $f = $_FILES['cover'] ?? 0;
+  $image = $oldImage;
+  if($f && $f['name']){
+    $image=$f['name'];
+    move_uploaded_file($f['tmp_name'], "./books/$image");
+  }
+
+  DB::exec("update book set title = '$title', author = '$author', description='$description', image='$image', inventory='$inventory' where idx = $idx");
+  move('/regiBook', '수정');
+  
+});
+
+post('/bookDelete', function() {
+  extract($_POST);
+  DB::exec("delete from book where idx = '$book_idx'");
+  move('/regiBook', '삭제');
 });

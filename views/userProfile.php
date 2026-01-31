@@ -17,6 +17,7 @@ where r.user_id = '$user_id'
   <p>제목: <?=$u->title?></p>
   <p>작가: <?=$u->author?></p>
   <p>대출기간: <?=$u -> rent_at?> ~ <?=$u -> return_date?></p>
+  <p>대출 상태: <?=$u-> status?></p>
   <p>----------------------------------------</p>
 </div>
 <?php 

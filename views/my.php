@@ -17,7 +17,7 @@ foreach($userBook as $u):
   <p>제목: <?=$u->title?></p>
   <p>작가: <?=$u->author?></p>
   <p>대출기간: <?=$u -> rent_at?> ~ <?=$u -> return_date?></p>
-  <button <?=$u -> status == 'O' ? '' : 'disabled'?>><?=$u -> status == 'O' ? '반납' : '반납됨 ㅋ'?></button>
+  <button <?=$u -> status == 'O' ? '' : 'disabled'?>><?=$u -> status == 'O' ? '반납' : '반납됨'?></button>
 </form>
 
 <?php endforeach;?>
